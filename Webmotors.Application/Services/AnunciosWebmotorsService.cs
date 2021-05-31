@@ -116,27 +116,27 @@ namespace Webmotors.Application.Services
         {
             var response = await _gatewayOnlineChallenge.Model(makeID);
 
-            var listMake = _mapper.Map<IEnumerable<GetModelResponse>>(response);
+            var list = _mapper.Map<IEnumerable<GetModelResponse>>(response);
 
-            return listMake;
+            return list;
         }
 
         public async Task<IEnumerable<GetVehiclesResponse>> GetVehicles(int page)
         {
             var response = await _gatewayOnlineChallenge.Vehicles(page);
 
-            var listMake = _mapper.Map<IEnumerable<GetVehiclesResponse>>(response);
+            var list = _mapper.Map<IEnumerable<GetVehiclesResponse>>(response);
 
-            return listMake;
+            return list;
         }
 
         public async Task<IEnumerable<GetVersionResponse>> GetVersion(int modelID)
         {
             var response = await _gatewayOnlineChallenge.Version(modelID);
 
-            var listMake = _mapper.Map<IEnumerable<GetVersionResponse>>(response);
+            var list = _mapper.Map<IEnumerable<GetVersionResponse>>(response);
 
-            return listMake;
+            return list;
         }
 
         public async Task Delete(int id)
