@@ -8,6 +8,7 @@ using Webmotors.Application.Interfaces;
 using Webmotors.Domain.Entities;
 using Webmotors.Domain.Interfaces.Gateway;
 using Webmotors.Domain.Interfaces.Repository;
+using Webmotors.Domain.Validators.AnuncioWebmotors;
 using Webmotors.Infraestructure.Interfaces;
 
 namespace Webmotors.Application.Services
@@ -18,18 +19,24 @@ namespace Webmotors.Application.Services
         private readonly IAnuncioWebmotorsRepository _anuncioRepository;
         private readonly IGatewayOnlineChallenge _gatewayOnlineChallenge;
         private readonly IMapper _mapper;
+        private readonly CreateAnuncioWebmotorValidator _createAnuncioWebmotorsValidator;
+        private readonly UpdateAnuncioWebmotorValidator _updateAnuncioWebmotorValidator;
 
 
         public AnunciosWebmotorsService(
             IUnitOfWork unitOfWork,
             IAnuncioWebmotorsRepository anuncioRepository,
             IGatewayOnlineChallenge gatewayOnlineChallenge,
-            IMapper mapper)
+            IMapper mapper,
+            CreateAnuncioWebmotorValidator createAnuncioWebmotorsValidator, 
+            UpdateAnuncioWebmotorValidator updateAnuncioWebmotorValidator)
         {
             _unitOfWork = unitOfWork;
             _anuncioRepository = anuncioRepository;
             _gatewayOnlineChallenge = gatewayOnlineChallenge;
             _mapper = mapper;
+            _createAnuncioWebmotorsValidator = createAnuncioWebmotorsValidator;
+            _updateAnuncioWebmotorValidator = updateAnuncioWebmotorValidator;
         }
 
         public async Task<GetAllAnunciosResponse> GetAllAnuncios()
@@ -45,7 +52,6 @@ namespace Webmotors.Application.Services
 
         public async Task<CreateAnuncioResponse> Create(CreateAnuncioCommand command)
         {
-
             var anuncioEntity = new AnuncioWebmotors(
                     command.Marca,
                     command.Modelo,
@@ -55,7 +61,7 @@ namespace Webmotors.Application.Services
                     command.Observacao
                 );
 
-            anuncioEntity.IsSatisfied();
+            await _createAnuncioWebmotorsValidator.ValidateAndThrowAsync(anuncioEntity);
 
             using (_unitOfWork)
             using (var transaction = _unitOfWork.BeginTransaction())
@@ -84,7 +90,7 @@ namespace Webmotors.Application.Services
                 throw new ValidationException("Não foi encontrado anuncio com esse identificador");
 
             anuncio.Update(command.Observacao, command.Quilometragem);
-            anuncio.IsSatisfied();
+            await _updateAnuncioWebmotorValidator.ValidateAndThrowAsync(anuncio);
 
             using (_unitOfWork)
             using (var transaction = _unitOfWork.BeginTransaction())

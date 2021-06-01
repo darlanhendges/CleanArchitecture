@@ -29,12 +29,5 @@ namespace Webmotors.Domain.Entities
             this.Quilometragem = quilometragem;
             this.Observacao = observacao;
         }
-
-
-        public override void IsSatisfied()
-        {
-            var validator = new Validators.AnuncioWebmotors.GenericValidator();
-            DefaultValidatorExtensions.ValidateAndThrow(validator, this);
-        }
     }
 }

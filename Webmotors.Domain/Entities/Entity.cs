@@ -8,9 +8,6 @@ namespace Webmotors.Domain.Entities
     {
         public int ID { get; set; }
 
-        public virtual void IsSatisfied()
-        {
-
-        }
+    
     }
 }
